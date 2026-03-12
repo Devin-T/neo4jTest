@@ -39,15 +39,18 @@ def setup_mysql_schema_and_data(node_count: int = 50_000) -> None:
 
     并插入一条长度为 node_count 的单链：
       (0)->(1)->(2)->...->(node_count-1)
+
+    每次调用前会先删除并重新创建整个数据库，确保数据是干净的。
     """
-    # 先连接到系统库，创建数据库
+    # 先连接到系统库，删除并重新创建数据库
     with get_mysql_connection() as conn, conn.cursor() as cur:
+        cur.execute(f"DROP DATABASE IF EXISTS {MYSQL_DB}")
         cur.execute(
-            f"CREATE DATABASE IF NOT EXISTS {MYSQL_DB} "
+            f"CREATE DATABASE {MYSQL_DB} "
             "CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
         )
 
-    # 再连接到目标库，建表并插入数据
+    # 再连接到目标库，建表并插入数据（库此时为空）
     with get_mysql_connection(MYSQL_DB) as conn, conn.cursor() as cur:
         cur.execute(
             """

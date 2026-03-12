@@ -63,9 +63,9 @@ set +a
 详见 `neo4j_mysql_benchmark.md`，这里只简单回顾：
 
 - 逻辑结构是一条长链表：
-  \[
-  0 \rightarrow 1 \rightarrow 2 \rightarrow \dots \rightarrow (N-1)
-  \]
+
+0 \rightarrow 1 \rightarrow 2 \rightarrow \dots \rightarrow (N-1)
+
 - Neo4j：
   - 节点：`(:Node {id, chain_id})`
   - 关系：`(a:Node)-[:NEXT]->(b:Node)`
@@ -282,11 +282,11 @@ cd /Users/tianye/code/neo4jTest
 source .venv/bin/activate
 set -a
 source .env
-export FRIEND_PERSON_COUNT=2000 FRIEND_AVG_DEGREE=15 FRIEND_BENCHMARK_RUNS=50
+export FRIEND_PERSON_COUNT=2000 FRIEND_AVG_DEGREE=15 FRIEND_BENCHMARK_RUNS=5
 set +a
 
-python load_neo4j_friends.py
 python load_mysql_friends.py
+python load_neo4j_friends.py
 python friends_benchmark.py
 ```
 
@@ -313,4 +313,3 @@ pytest -q
 ```
 
 要求 Neo4j 服务已启动，且账号密码与环境变量一致。
-
