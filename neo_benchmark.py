@@ -1,7 +1,7 @@
 import os
 import random
 import time
-from typing import Tuple
+from typing import Optional, Tuple
 
 import pymysql
 from neo4j import GraphDatabase
@@ -17,7 +17,7 @@ def get_driver():
     return GraphDatabase.driver(URI, auth=(USER, PASSWORD))
 
 
-def setup_sample_graph(driver, node_count: int = 100_000) -> None:
+def setup_sample_graph(driver, node_count: int = 50_000) -> None:
     """
     创建一个简单的单链图：
     (:Node {id: 0})-[:NEXT]->(:Node {id: 1})-[:NEXT]->...，直到 id=node_count-1。
@@ -83,7 +83,7 @@ MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "")
 MYSQL_DB = os.getenv("MYSQL_DB", "graph_benchmark")
 
 
-def get_mysql_connection(db: str | None = None):
+def get_mysql_connection(db: Optional[str] = None):
     """
     获取 MySQL 连接。
     如果 db 为 None，则连接到默认系统库，用于创建数据库。
@@ -100,7 +100,7 @@ def get_mysql_connection(db: str | None = None):
     )
 
 
-def setup_mysql_schema_and_data(node_count: int = 500_000) -> None:
+def setup_mysql_schema_and_data(node_count: int = 50_000) -> None:
     """
     在 MySQL 中创建等价的数据模型：
 
@@ -188,18 +188,18 @@ def run_benchmarks() -> None:
     neo_runs = 500
     mysql_runs = 500
 
-    print("=== Neo4j: 准备数据 ===")
+    print("=== Neo4j: 准备数据（50k 节点） ===")
     driver = get_driver()
     try:
-        setup_sample_graph(driver, node_count=500_000)
+        setup_sample_graph(driver, node_count=50_000)
         print("=== Neo4j: 深度遍历基准 ===")
         neo_avg_ms, hops = benchmark_traversal(driver, start_id=0, depth=depth, runs=neo_runs)
         print(f"[Neo4j] depth={depth}, runs={neo_runs}, avg={neo_avg_ms:.3f} ms, hops={hops}")
     finally:
         driver.close()
 
-    print("=== MySQL: 准备数据（可能稍慢） ===")
-    setup_mysql_schema_and_data(node_count=500_000)
+    print("=== MySQL: 准备数据（50k 节点） ===")
+    setup_mysql_schema_and_data(node_count=50_000)
     print("=== MySQL: 深度遍历基准（多次 5 层自连接） ===")
     mysql_avg_ms = benchmark_mysql_traversal(depth=depth, runs=mysql_runs)
     print(f"[MySQL] depth={depth}, runs={mysql_runs}, avg={mysql_avg_ms:.3f} ms")

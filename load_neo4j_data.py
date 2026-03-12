@@ -8,7 +8,7 @@ USER = os.getenv("NEO4J_USER", "neo4j")
 PASSWORD = os.getenv("NEO4J_PASSWORD", "test")
 
 
-def setup_sample_graph(driver, node_count: int = 500_000) -> None:
+def setup_sample_graph(driver, node_count: int = 50_000) -> None:
     """
     在 Neo4j 中创建一条长度为 node_count 的单链：
       (:Node {id: 0})-[:NEXT]->(:Node {id: 1})-[:NEXT]->...-[:NEXT]->(:Node {id: node_count-1})
@@ -33,7 +33,7 @@ def setup_sample_graph(driver, node_count: int = 500_000) -> None:
 
 
 def main() -> None:
-    node_count = int(os.getenv("NODE_COUNT", "500000"))
+    node_count = int(os.getenv("NODE_COUNT", "50000"))
     driver = GraphDatabase.driver(URI, auth=(USER, PASSWORD))
     try:
         print(f"Preparing Neo4j chain with {node_count} nodes ...")

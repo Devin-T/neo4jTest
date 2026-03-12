@@ -1,6 +1,7 @@
 import os
 
 import pymysql
+from typing import Optional
 
 
 MYSQL_HOST = os.getenv("MYSQL_HOST", "localhost")
@@ -10,7 +11,7 @@ MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "")
 MYSQL_DB = os.getenv("MYSQL_DB", "graph_benchmark")
 
 
-def get_mysql_connection(db: str | None = None):
+def get_mysql_connection(db: Optional[str] = None):
     """
     获取 MySQL 连接。
     如果 db 为 None，则连接到默认系统库，用于创建数据库。
@@ -27,7 +28,7 @@ def get_mysql_connection(db: str | None = None):
     )
 
 
-def setup_mysql_schema_and_data(node_count: int = 500_000) -> None:
+def setup_mysql_schema_and_data(node_count: int = 50_000) -> None:
     """
     在 MySQL 中创建等价的数据模型：
 
@@ -75,7 +76,7 @@ def setup_mysql_schema_and_data(node_count: int = 500_000) -> None:
 
 
 def main() -> None:
-    node_count = int(os.getenv("NODE_COUNT", "500000"))
+    node_count = int(os.getenv("NODE_COUNT", "50000"))
     print(f"Preparing MySQL chain with {node_count} nodes in database '{MYSQL_DB}' ...")
     setup_mysql_schema_and_data(node_count=node_count)
     print("Done.")
