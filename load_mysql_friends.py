@@ -57,7 +57,8 @@ def load_friends_graph(person_count: int = 10_000, avg_degree: int = 20) -> None
               person_id BIGINT NOT NULL,
               friend_id BIGINT NOT NULL,
               KEY idx_person (person_id),
-              KEY idx_friend (friend_id)
+              KEY idx_friend (friend_id),
+              KEY idx_person_friend (person_id, friend_id)
             ) ENGINE=InnoDB
             """
         )

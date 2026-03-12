@@ -49,6 +49,15 @@ def mirror_friends_from_mysql(driver) -> None:
         friendships = cur.fetchall()
 
     with driver.session() as session:
+        # 为 Person(id) 创建唯一约束（隐含索引），便于按 id 快速定位起点
+        session.run(
+            """
+            CREATE CONSTRAINT person_id_unique IF NOT EXISTS
+            FOR (p:Person)
+            REQUIRE p.id IS UNIQUE
+            """
+        )
+
         # 清空整图库，确保与 MySQL 完全一致
         session.run("MATCH (n) DETACH DELETE n")
 
